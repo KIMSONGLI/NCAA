@@ -1,7 +1,7 @@
 import csv
 import time
 from teamClass import teamdata
-
+# This is test for Visual Studio 2017 by LJM
 data = []
 stime = time.time()
 try: 
