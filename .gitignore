@@ -105,3 +105,6 @@ venv.bak/
 
 #VisualStudio configure
 .vs/
+
+#NoCSV
+*.csv
