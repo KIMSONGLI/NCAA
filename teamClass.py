@@ -36,13 +36,31 @@ class teamdata:
 		self.steal = self.steal + stl
 		self.turnOver = self.turnOver + TO
 
-	def weight(self):
-		return {
-			field: fieldgoalRate,
-			meanOR: offRebound,
-			meanDR: defRebound,
-			meanBLK: meanBlock,
-			meanSTL: meanSteal,
-			meanTO: meanTurnOver
-		}
+	def __add__(self, other):
+		result = teamdata()
+		result.teamID = self.teamID
+		result.totalgame = self.totalgame + other.totalgame
+		result.wingame = self.wingame + other.wingame
+		result.totalfieldgoal = self.totalfieldgoal + other.totalfieldgoal
+		result.successfieldgoal = self.successfieldgoal + other.successfieldgoal
+		result.offRebound = self.offRebound + other.offRebound
+		result.defRebound = self.defRebound + other.defRebound
+		result.block = self.block + other.block
+		result.steal = self.steal + other.steal
+		result.turnOver = self.turnOver + other.turnOver
+		return result
+
+	def __eq__(self, other):
+		return self.teamID == other.teamID
+			 
+
+#	def weight(self):
+#		return {
+#			field: fieldgoalRate,
+#			meanOR: offRebound,
+#			meanDR: defRebound,
+#			meanBLK: meanBlock,
+#			meanSTL: meanSteal,
+#			meanTO: meanTurnOver
+#		}
 	
