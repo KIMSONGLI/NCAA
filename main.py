@@ -31,7 +31,7 @@ except FileNotFoundError:
 							wd.writerow([e2.teamID, e2.wingame, e2.totalgame, e2.successfieldgoal, e2.totalfieldgoal, e2.offRebound, e2.defRebound, e2.block, e2.steal, e2.turnOver])
 					if seasonID == "2003" :
 						data = seasonData.copy()
-					seasonData = []; tID = []; seasonID = e[0]
+					seasonData = []; tID = [];
 				s = [int(e[x]) for x in caseW] + [e[2]]
 				if e[2] in tID :
 					seasonData[tID.index(e[2])].update(1, *s)
@@ -48,8 +48,9 @@ except FileNotFoundError:
 					team.update(0, *s)
 					seasonData.append(team)
 					tID.append(e[4])
+				seasonID = e[0]
 		else :
-			with open('Data_'+e[0]+'.csv', 'w', encoding='utf-8', newline='') as wf :
+			with open('Data_'+seasonID+'.csv', 'w', encoding='utf-8', newline='') as wf :
 				wd = csv.writer(wf)
 				for e2 in seasonData :
 					wd.writerow([e2.teamID, e2.wingame, e2.totalgame, e2.successfieldgoal, e2.totalfieldgoal, e2.offRebound, e2.defRebound, e2.block, e2.steal, e2.turnOver])
