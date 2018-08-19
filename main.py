@@ -1,48 +1,58 @@
-import csv
-import time
+import csv, time, os
 from teamClass import teamdata
 
-data = []
 stime = time.time()
+
+data = []
 try: 
-	with open('OurResults.csv', 'r', encoding='utf-8') as f:
+	with open('Data_2003.csv', 'r', encoding='utf-8') as f:
 		rd = csv.reader(f)
 		for e in rd:
 			team = teamdata()
 			team.read(e)
 			data.append(team)
+	del rd, e, team
 
 except FileNotFoundError:
-	with open('RegularSeasonDetailedResults.csv', 'r', encoding='utf-8') as f:
-		rd = csv.reader(f)
+	fList = os.listdir()
+	fList = [s for s in fList if "Data_" in s and ".csv" in s]
+	seasons = [];
+	for s in fList : seasons.append(s.strip("Data_.csv"))
+	with open('RegularSeasonDetailedResults.csv', 'r', encoding='utf-8') as rf:
+		rd = csv.reader(rf)
+		seasonData = []; tID = []; seasonID = "2003"
+		caseW = [9, 8, 14, 15, 19, 20, 17]; caseL = [num+13 for num in caseW];
 		for e in rd:
-			if e[0] == 'Season':
-				pass
-			else :
-				wchecker = False
-				dchecker = False
-				for d in data:
-					if d.teamID == e[2]:
-						wchecker = True
-						d.update(winorlose = 1, fieldgoal = int(e[9]), fieldgoals = int(e[8]), OR = int(e[14]), dr = int(e[15]), blk = int(e[19]), stl = int(e[20]), TO = int(e[17]))
-					elif d.teamID == e[4]:
-						dchecker = True
-						d.update(winorlose = 0, fieldgoal = int(e[22]), fieldgoals = int(e[21]), OR = int(e[27]), dr = int(e[28]), blk = int(e[32]), stl = int(e[33]), TO = int(e[30]))
-				if wchecker == False:
-					winteam = teamdata()
-					winteam.update(1, int(e[9]), int(e[8]), int(e[14]), int(e[15]), int(e[19]), int(e[20]), int(e[17]), ID = e[2])
-					data.append(winteam)
+			if 'Season' != e[0] not in seasons :
+				if e[0] != seasonID :
+					with open('Data_'+seasonID+'.csv', 'w', encoding='utf-8', newline='') as wf :
+						wd = csv.writer(wf)
+						for e2 in seasonData :
+							wd.writerow([e2.teamID, e2.wingame, e2.totalgame, e2.successfieldgoal, e2.totalfieldgoal, e2.offRebound, e2.defRebound, e2.block, e2.steal, e2.turnOver])
+					if seasonID == "2003" :
+						data = seasonData.copy()
+					seasonData = []; tID = []; seasonID = e[0]
+				s = [int(e[x]) for x in caseW] + [e[2]]
+				if e[2] in tID :
+					seasonData[tID.index(e[2])].update(1, *s)
+				else :
+					team = teamdata()
+					team.update(1, *s)
+					seasonData.append(team)
+					tID.append(e[2])
+				s = [int(e[x]) for x in caseL] + [e[4]]
+				if e[4] in tID :
+					seasonData[tID.index(e[4])].update(0, *s)
+				else :
+					team = teamdata()
+					team.update(0, *s)
+					seasonData.append(team)
+					tID.append(e[4])
+		else :
+			with open('Data_'+e[0]+'.csv', 'w', encoding='utf-8', newline='') as wf :
+				wd = csv.writer(wf)
+				for e2 in seasonData :
+					wd.writerow([e2.teamID, e2.wingame, e2.totalgame, e2.successfieldgoal, e2.totalfieldgoal, e2.offRebound, e2.defRebound, e2.block, e2.steal, e2.turnOver])
+	del fList, seasons, s, rd, seasonData, tID, seasonID, caseW, caseL, e, wd, e2, team
 
-				if dchecker == False:
-					loseteam = teamdata()
-					loseteam.update(0, int(e[22]), int(e[21]), int(e[27]), int(e[28]), int(e[32]), int(e[33]), int(e[30]), ID = e[4])
-					data.append(loseteam)
-del rd
-etime = time.time()
-print('Readdata: ', data[0].teamID)
-print('Total Time: ', etime - stime)
-
-with open('OurResults.csv', 'w', encoding='utf-8', newline='') as f:
-	wd = csv.writer(f)
-	for e in data:
-		wd.writerow([e.teamID, e.wingame, e.totalgame, e.successfieldgoal, e.totalfieldgoal, e.offRebound, e.defRebound, e.block, e.steal, e.turnOver])
+print('Total Time: ', time.time() - stime); del stime
