@@ -14,9 +14,8 @@ try:
 	del rd, e, team
 
 except FileNotFoundError:
-	fList = os.listdir()
-	fList = [s for s in fList if "Data_" in s and ".csv" in s]
 	seasons = [];
+	fList = [s for s in os.listdir() if s[0:5]=="Data_" and s[-4:]==".csv"]
 	for s in fList : seasons.append(s.strip("Data_.csv"))
 	with open('RegularSeasonDetailedResults.csv', 'r', encoding='utf-8') as rf:
 		rd = csv.reader(rf)
@@ -31,7 +30,7 @@ except FileNotFoundError:
 							wd.writerow([e2.teamID, e2.wingame, e2.totalgame, e2.successfieldgoal, e2.totalfieldgoal, e2.offRebound, e2.defRebound, e2.block, e2.steal, e2.turnOver])
 					if seasonID == "2003" :
 						data = seasonData.copy()
-					seasonData = []; tID = [];
+					seasonData = []; tID = []; seasonID = e[0]
 				s = [int(e[x]) for x in caseW] + [e[2]]
 				if e[2] in tID :
 					seasonData[tID.index(e[2])].update(1, *s)
@@ -48,12 +47,11 @@ except FileNotFoundError:
 					team.update(0, *s)
 					seasonData.append(team)
 					tID.append(e[4])
-				seasonID = e[0]
 		else :
 			with open('Data_'+seasonID+'.csv', 'w', encoding='utf-8', newline='') as wf :
 				wd = csv.writer(wf)
 				for e2 in seasonData :
 					wd.writerow([e2.teamID, e2.wingame, e2.totalgame, e2.successfieldgoal, e2.totalfieldgoal, e2.offRebound, e2.defRebound, e2.block, e2.steal, e2.turnOver])
-	del fList, seasons, s, rd, seasonData, tID, seasonID, caseW, caseL, e, wd, e2, team
+			del fList, seasons, s, rd, seasonData, tID, seasonID, caseW, caseL, e, wd, e2, team
 
 print('Total Time: ', time.time() - stime); del stime
